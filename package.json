@@ -1,0 +1,28 @@
+{
+  "name": "@msb/react-ts-cli",
+  "version": "0.0.1",
+  "description": "CLI tool for scaffolding an opinionated prebuilt fully type-safe React-TS project",
+  "bin": {
+    "demo": "./cli/dist/index.js"
+  },
+  "main": "./cli/dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc -w",
+    "cli": "tsc && node ./cli/dist/index.js"
+  },
+  "keywords": [],
+  "author": "Malitha Sandaruwan (msb)",
+  "license": "MIT",
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@types/node": "^20.11.20",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "execa": "^8.0.1",
+    "ora": "^8.0.1",
+    "picocolors": "^1.0.0"
+  }
+}
