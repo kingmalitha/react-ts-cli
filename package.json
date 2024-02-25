@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "CLI tool for scaffolding an opinionated prebuilt fully type-safe React-TS project",
   "bin": {
-    "demo": "./cli/dist/index.js"
+    "msb-react-app": "./cli/dist/index.js"
   },
   "main": "./cli/dist/index.js",
   "type": "module",
