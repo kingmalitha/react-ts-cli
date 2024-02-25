@@ -3,9 +3,11 @@
 import * as clack from "@clack/prompts";
 import pc from "picocolors";
 import { sleep } from "./utils/sleeper.js";
-import ora from "ora";
-import { getPkgManager } from "./utils/getPkgManager.js";
 import { cloneRepo } from "./helpers/cloneRepo.js";
+import { nameExists } from "./utils/nameExists.js";
+import { updatePackageName } from "./utils/updatePackageJSON.js";
+import { installDependencies } from "./helpers/installDependencies.js";
+import { generateFinalNote } from "./utils/generateFinalNote.js";
 
 async function main() {
   console.clear();
@@ -25,25 +27,15 @@ async function main() {
           validate: (input) => {
             if (!input)
               return "Please enter a project name";
+            // SANITIZE INPUT
+            if (/[^a-zA-Z0-9-_]/.test(input)) {
+              return "Project name can only include alphanumeric characters, hyphens and underscores";
+            }
+            // CHECK IF NAME EXISTS
+            if (nameExists(input.toLowerCase())) {
+              return "A directory with this name already exists, please choose another name";
+            }
           },
-        }),
-      tools: () =>
-        clack.multiselect({
-          message: "Which additi tools do you want to use?",
-          initialValues: ["eslint", "prettier"],
-          options: [
-            { value: "eslint", label: "ESLint" },
-            { value: "prettier", label: "Prettier" },
-            { value: "typescript", label: "TypeScript" },
-            { value: "jest", label: "Jest" },
-            { value: "lint-staged", label: "Lint-staged" },
-          ],
-        }),
-      git: () =>
-        clack.confirm({
-          message:
-            "Do you want to initialize a git repository?",
-          initialValue: true,
         }),
       install: () =>
         clack.confirm({
@@ -55,48 +47,34 @@ async function main() {
 
     {
       onCancel: () => {
-        clack.cancel("Operation cancelled");
-        process.exit(1);
+        clack.cancel(
+          "User cancelled the installation process. Exiting..."
+        );
+        process.exit(0);
       },
     }
   );
 
   clack.intro(
     pc.bgGreen(
-      pc.black(
+      pc.white(
         "\n\nAwesome! Please wait until we set up your project.\n\n"
       )
     )
   );
 
-  await cloneRepo(project.name, "javascript");
+  // CLONE REPO
+  await cloneRepo(project.name.toLowerCase());
 
-  if (project.git) {
-    const s = clack.spinner();
-    s.start("Initializing git repository");
-    await sleep(2000);
-    s.stop("Git repository initialized");
-  } else {
-    clack.outro(
-      `Run ${pc.green(
-        "git init"
-      )} to initialize a git repository.`
-    );
-  }
+  // UPDATE PACKAGE.JSON
+  updatePackageName(project.name.toLowerCase());
 
-  if (project.install) {
-    const s = clack.spinner();
-    s.start("Installing dependencies");
-    await sleep(2000);
-    s.stop("Dependencies installed");
-  } else {
-    const pkgManager = getPkgManager();
-    clack.outro(
-      `Run ${pc.green(
-        `${pkgManager} install`
-      )} to install the dependencies.`
-    );
-  }
+  // INSTALL DEPENDENCIES
+  if (project.install)
+    await installDependencies(project.name.toLowerCase());
+
+  // FINAL NOTE
+  generateFinalNote(project);
 }
 
 main().catch((error) => {

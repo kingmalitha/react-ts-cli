@@ -1,21 +1,16 @@
 import ora from "ora";
+import path from "path";
 import { exec } from "child_process";
 
-type templateType = "javascript" | "typescript";
-
-export async function cloneRepo(
-  name: string,
-  template: templateType
-) {
+export async function cloneRepo(name: string) {
   const spinner = ora("Creating project structure").start();
 
-  console.log("name", name);
-  console.log("template", template);
+  const destinationPath = path.join(process.cwd(), name);
 
-  const cmd = `npx degit https://`;
+  const cmd = `npx degit https://github.com/kingmalitha/react-ts-cli/template/base ${destinationPath}`;
 
   return new Promise((resolve, reject) => {
-    exec(cmd, (err) => {
+    exec(cmd, { encoding: "utf-8" }, (err) => {
       if (err) {
         spinner.fail("Project structure creation failed");
         reject(err);
