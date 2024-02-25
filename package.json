@@ -1,22 +1,27 @@
 {
-  "name": "@msb/react-ts-cli",
+  "name": "@kingmalitha/react-app",
   "version": "0.0.1",
   "description": "CLI tool for scaffolding an opinionated prebuilt fully type-safe React-TS project",
   "bin": {
-    "msb-react-app": "./cli/dist/index.js"
+    "react-app": "./cli/dist/index.js"
   },
   "main": "./cli/dist/index.js",
   "type": "module",
   "scripts": {
     "dev": "tsc -w",
-    "cli": "tsc && node ./cli/dist/index.js"
+    "cli": "tsc && node ./cli/dist/index.js",
+    "build": "rimraf ./cli/dist && tsc"
   },
-  "keywords": [],
+  "keywords": [
+    "react-ts",
+    "type-safe"
+  ],
   "author": "Malitha Sandaruwan (msb)",
   "license": "MIT",
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
     "@types/node": "^20.11.20",
+    "rimraf": "^5.0.5",
     "typescript": "^5.3.3"
   },
   "dependencies": {
